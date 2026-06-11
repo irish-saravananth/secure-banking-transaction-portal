@@ -3,10 +3,18 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
 db = SQLAlchemy()
+
 login_manager = LoginManager()
+login_manager.login_view = "main.login"
+
 
 def create_app():
-    app = Flask(__name__)
+
+    app = Flask(
+        __name__,
+        template_folder="../templates",
+        static_folder="../static"
+    )
 
     app.config["SECRET_KEY"] = "dev-secret-key"
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///banking.db"
@@ -14,10 +22,10 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
 
+    from app.models import User
+
     from app.routes import bp
     app.register_blueprint(bp)
-
-    from app.models import User
 
     with app.app_context():
         db.create_all()
