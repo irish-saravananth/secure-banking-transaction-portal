@@ -6,7 +6,17 @@ from flask import (
     url_for
 )
 
-from werkzeug.security import generate_password_hash
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
+
+from flask_login import (
+    login_user,
+    logout_user,
+    login_required,
+    current_user
+)
 
 from app import db
 from app.models import User
@@ -46,6 +56,57 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        return "User Registered Successfully"
+        return redirect(url_for("main.login"))
 
     return render_template("register.html")
+
+
+@bp.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+
+        email = request.form["email"]
+        password = request.form["password"]
+
+        user = User.query.filter_by(
+            email=email
+        ).first()
+
+        if not user:
+            return "Invalid credentials"
+
+        if not check_password_hash(
+            user.password_hash,
+            password
+        ):
+            return "Invalid credentials"
+
+        login_user(user)
+
+        return redirect(
+            url_for("main.dashboard")
+        )
+
+    return render_template("login.html")
+
+
+@bp.route("/dashboard")
+@login_required
+def dashboard():
+
+    return render_template(
+        "dashboard.html",
+        user=current_user
+    )
+
+
+@bp.route("/logout")
+@login_required
+def logout():
+
+    logout_user()
+
+    return redirect(
+        url_for("main.login")
+    )
