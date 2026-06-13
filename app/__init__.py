@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+import os
 
 db = SQLAlchemy()
 
@@ -16,7 +17,11 @@ def create_app():
         static_folder="../static"
     )
 
-    app.config["SECRET_KEY"] = "dev-secret-key"
+    app.config["SECRET_KEY"] = os.environ.get(
+        "SECRET_KEY",
+        "temporary-development-key"
+    )
+
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///banking.db"
 
     db.init_app(app)
