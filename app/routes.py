@@ -19,7 +19,7 @@ from flask_login import (
 )
 
 from app import db
-from app.models import User
+from app.models import User, Transaction
 
 bp = Blueprint("main", __name__)
 
@@ -99,6 +99,51 @@ def dashboard():
         "dashboard.html",
         user=current_user
     )
+
+
+@bp.route("/transfer", methods=["GET", "POST"])
+@login_required
+def transfer():
+
+    if request.method == "POST":
+
+        recipient_email = request.form["email"]
+        amount = float(request.form["amount"])
+
+        recipient = User.query.filter_by(
+            email=recipient_email
+        ).first()
+
+        if not recipient:
+            return "Recipient not found"
+
+        if recipient.id == current_user.id:
+            return "Cannot transfer to yourself"
+
+        if amount <= 0:
+            return "Invalid amount"
+
+        if current_user.balance < amount:
+            return "Insufficient funds"
+
+        current_user.balance -= amount
+        recipient.balance += amount
+
+        transaction = Transaction(
+            sender_id=current_user.id,
+            receiver_id=recipient.id,
+            amount=amount,
+            status="SUCCESS"
+        )
+
+        db.session.add(transaction)
+        db.session.commit()
+
+        return redirect(
+            url_for("main.dashboard")
+        )
+
+    return render_template("transfer.html")
 
 
 @bp.route("/logout")
