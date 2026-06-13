@@ -56,7 +56,9 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        return redirect(url_for("main.login"))
+        return redirect(
+            url_for("main.login")
+        )
 
     return render_template("register.html")
 
@@ -144,6 +146,24 @@ def transfer():
         )
 
     return render_template("transfer.html")
+
+
+@bp.route("/transactions")
+@login_required
+def transactions():
+
+    transactions = Transaction.query.filter(
+        (Transaction.sender_id == current_user.id)
+        |
+        (Transaction.receiver_id == current_user.id)
+    ).order_by(
+        Transaction.created_at.desc()
+    ).all()
+
+    return render_template(
+        "transactions.html",
+        transactions=transactions
+    )
 
 
 @bp.route("/logout")
