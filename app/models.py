@@ -1,7 +1,10 @@
 from flask_login import UserMixin
-from app import db
+from app import db, login_manager
+from datetime import datetime
+
 
 class User(UserMixin, db.Model):
+
     id = db.Column(
         db.Integer,
         primary_key=True
@@ -28,7 +31,40 @@ class User(UserMixin, db.Model):
         db.Float,
         default=1000.0
     )
-from app import login_manager
+
+
+class Transaction(db.Model):
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    sender_id = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    receiver_id = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    amount = db.Column(
+        db.Float,
+        nullable=False
+    )
+
+    status = db.Column(
+        db.String(20),
+        default="SUCCESS"
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
 
 @login_manager.user_loader
 def load_user(user_id):
