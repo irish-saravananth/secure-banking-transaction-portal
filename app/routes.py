@@ -56,9 +56,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        return redirect(
-            url_for("main.login")
-        )
+        return redirect(url_for("main.login"))
 
     return render_template("register.html")
 
@@ -109,33 +107,34 @@ def transfer():
 
     if request.method == "POST":
 
-        recipient_email = request.form["email"]
+        email = request.form["email"]
         amount = float(request.form["amount"])
 
-        recipient = User.query.filter_by(
-            email=recipient_email
+        receiver = User.query.filter_by(
+            email=email
         ).first()
 
-        if not recipient:
-            return "Recipient not found"
+        # Validation Checks
 
-        if recipient.id == current_user.id:
-            return "Cannot transfer to yourself"
+        if not receiver:
+            return "Recipient does not exist"
+
+        if receiver.id == current_user.id:
+            return "Cannot transfer money to yourself"
 
         if amount <= 0:
-            return "Invalid amount"
+            return "Amount must be greater than zero"
 
         if current_user.balance < amount:
-            return "Insufficient funds"
+            return "Insufficient balance"
 
         current_user.balance -= amount
-        recipient.balance += amount
+        receiver.balance += amount
 
         transaction = Transaction(
             sender_id=current_user.id,
-            receiver_id=recipient.id,
-            amount=amount,
-            status="SUCCESS"
+            receiver_id=receiver.id,
+            amount=amount
         )
 
         db.session.add(transaction)
@@ -152,17 +151,15 @@ def transfer():
 @login_required
 def transactions():
 
-    transactions = Transaction.query.filter(
+    transaction_list = Transaction.query.filter(
         (Transaction.sender_id == current_user.id)
         |
         (Transaction.receiver_id == current_user.id)
-    ).order_by(
-        Transaction.created_at.desc()
     ).all()
 
     return render_template(
         "transactions.html",
-        transactions=transactions
+        transactions=transaction_list
     )
 
 
