@@ -1,9 +1,32 @@
+# ===========================
+# Python
+# ===========================
 venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ===========================
+# Flask
+# ===========================
 instance/
 *.db
 .env
-__pycache__/
-**/__pycache__/
+
+# ===========================
+# IDE
+# ===========================
 .vscode/
 .idea/
-reports/
+
+# ===========================
+# Security Reports
+# Keep reports in Git for portfolio purposes
+# ===========================
+!reports/
+!reports/README.md
+!reports/*.txt
+!reports/*.html
+!reports/*.yaml
