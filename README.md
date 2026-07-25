@@ -297,7 +297,7 @@ Include screenshots of:
 
 | Severity | Findings |
 |----------|---------:|
-| High | **0** ✅ |
+| High | **0** |
 | Medium | **4** |
 | Low | **6** |
 | Informational | **3** |
