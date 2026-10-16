@@ -1,8 +1,29 @@
+# Python environments and generated files
 venv/
+.venv/
 __pycache__/
+**/__pycache__/
 *.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local application data
 instance/
+*.db
+*.sqlite
+*.sqlite3
+*.log
+logs/
+
+# Secrets and signing material
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+cosign.key
+
+# Git and development metadata
 .git/
 .github/
-logs/
-.env

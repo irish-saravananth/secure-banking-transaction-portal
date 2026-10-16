@@ -1,104 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MARIAMMAN INDIAN BANK - Transfer Money</title>
-
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
-    >
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
 </head>
-
 <body class="bg-light">
-
 <nav class="navbar navbar-dark bg-primary">
-
     <div class="container-fluid">
-
-        <span class="navbar-brand">
-            MARIAMMAN INDIAN BANK
-        </span>
-
-        <a
-            href="/dashboard"
-            class="btn btn-light"
-        >
-            Dashboard
-        </a>
-
+        <span class="navbar-brand">MARIAMMAN INDIAN BANK</span>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-light">Dashboard</a>
     </div>
-
 </nav>
-
 <div class="container mt-5">
-
     <div class="row justify-content-center">
-
         <div class="col-md-6">
-
             <div class="card shadow">
-
-                <div class="card-header">
-
-                    <h3>
-                        Transfer Money
-                    </h3>
-
-                </div>
-
+                <div class="card-header"><h3>Transfer Money</h3></div>
                 <div class="card-body">
-
-                    <form method="POST">
-
+                    <form method="POST" action="{{ url_for('main.transfer') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="mb-3">
-
-                            <label class="form-label">
-                                Recipient Email
-                            </label>
-
-                            <input
-                                type="email"
-                                name="email"
-                                class="form-control"
-                                required
-                            >
-
+                            <label for="email" class="form-label">Recipient Email</label>
+                            <input id="email" type="email" name="email"
+                                   class="form-control" autocomplete="email" required>
                         </div>
-
                         <div class="mb-3">
-
-                            <label class="form-label">
-                                Amount
-                            </label>
-
-                            <input
-                                type="number"
-                                step="0.01"
-                                name="amount"
-                                class="form-control"
-                                required
-                            >
-
+                            <label for="amount" class="form-label">Amount</label>
+                            <input id="amount" type="number" name="amount"
+                                   class="form-control" min="0.01" step="0.01"
+                                   inputmode="decimal" required>
                         </div>
-
-                        <button
-                            type="submit"
-                            class="btn btn-success w-100"
-                        >
-                            Transfer Funds
-                        </button>
-
+                        <button type="submit" class="btn btn-success w-100">Transfer Funds</button>
                     </form>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
-
 </body>
 </html>
